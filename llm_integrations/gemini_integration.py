@@ -1,6 +1,6 @@
 import asyncio
-from google import genai
-from google.genai.types import Tool, GenerateContentConfig, GoogleSearchRetrieval
+import google.generativeai as genai
+from google.generativeai.types import Tool, GenerateContentConfig, GoogleSearchRetrieval
 import os 
 from dotenv import load_dotenv
 from metrics import has_brand_mention
