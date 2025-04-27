@@ -1,6 +1,6 @@
 import asyncio
-import google.generativeai as genai
-from google.generativeai.types import Tool, GenerateContentConfig, GoogleSearchRetrieval
+import google.generativeai
+from google.generativeai import types
 import os 
 from dotenv import load_dotenv
 from metrics import has_brand_mention
@@ -12,21 +12,21 @@ GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME")
 
 class GeminiIntegration:
     def __init__(self, model_name=GEMINI_MODEL_NAME, api_key=GEMINI_API_KEY, brand_name="Avanza", competitor_name="Nordnet"):
-        self.client = genai.Client(api_key=api_key)
+        self.client = google.generativeai.Client(api_key=api_key)
         self.model_name = model_name
         self.brand_name = brand_name
         self.competitor_name = competitor_name
         self.provider_name = "Gemini"
 
     async def query_gemini(self, query_text):
-        google_search_tool = Tool(
-            google_search_retrieval = GoogleSearchRetrieval()
+        google_search_tool = types.Tool(
+            google_search_retrieval = types.GoogleSearchRetrieval()
         )
 
         response = self.client.models.generate_content(
             model=self.model_name,
             contents=query_text,
-            config=GenerateContentConfig(
+            config=types.GenerateContentConfig(
                     tools=[google_search_tool],
                     response_modalities=["TEXT"],
                 )
