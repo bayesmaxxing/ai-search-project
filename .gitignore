@@ -1,0 +1,7 @@
+.env
+__pycache__
+.venv
+response_logs
+uv.lock
+pyproject.toml
+.DS_Store

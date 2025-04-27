@@ -1,0 +1,32 @@
+import asyncio
+from datetime import datetime
+from typing import List, Dict
+from dotenv import load_dotenv
+load_dotenv() 
+
+from llm_integrations.perplexity_integration import PerplexityIntegration
+from llm_integrations.gemini_integration      import GeminiIntegration
+from llm_integrations.openai_integration      import OpenAIIntegration
+
+ProviderResult = Dict  # -> the same dict shape your provider classes return
+
+async def run_all(
+    brand: str,
+    competitor: str,
+    queries: List[str]
+) -> List[ProviderResult]:
+    """Run all providers concurrently and flatten the results."""
+    providers = [
+        PerplexityIntegration(brand_name=brand, competitor_name=competitor),
+        GeminiIntegration(brand_name=brand, competitor_name=competitor),
+        OpenAIIntegration(brand_name=brand, competitor_name=competitor),
+    ]
+    queries = queries * 3
+    tasks = [p.batch_query_perplexity(queries) if p.provider_name == "Perplexity"
+             else p.batch_query_gemini(queries) if p.provider_name == "Gemini"
+             else p.batch_query_openai(queries)
+             for p in providers]
+
+    nested_results: List[List[ProviderResult]] = await asyncio.gather(*tasks)
+    # flatten so Streamlit can loop easily
+    return [item for sub in nested_results for item in sub]
