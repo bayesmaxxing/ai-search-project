@@ -6,6 +6,7 @@ annotated-types==0.7.0
     # via pydantic
 anyio==4.9.0
     # via
+    #   google-genai
     #   httpx
     #   openai
 attrs==25.3.0
@@ -52,9 +53,12 @@ google-auth==2.39.0
     #   google-api-core
     #   google-api-python-client
     #   google-auth-httplib2
+    #   google-genai
     #   google-generativeai
 google-auth-httplib2==0.2.0
     # via google-api-python-client
+google-genai==1.12.1
+    # via ai-search (pyproject.toml)
 google-generativeai==0.8.5
     # via ai-search (pyproject.toml)
 googleapis-common-protos==1.70.0
@@ -76,7 +80,9 @@ httplib2==0.22.0
     #   google-api-python-client
     #   google-auth-httplib2
 httpx==0.28.1
-    # via openai
+    # via
+    #   google-genai
+    #   openai
 idna==3.10
     # via
     #   anyio
@@ -126,7 +132,7 @@ protobuf==5.29.4
     #   grpcio-status
     #   proto-plus
     #   streamlit
-pyarrow==19.0.1
+pyarrow==20.0.0
     # via streamlit
 pyasn1==0.6.1
     # via
@@ -136,6 +142,7 @@ pyasn1-modules==0.4.2
     # via google-auth
 pydantic==2.11.3
     # via
+    #   google-genai
     #   google-generativeai
     #   openai
 pydantic-core==2.33.1
@@ -158,6 +165,7 @@ requests==2.32.3
     # via
     #   ai-search (pyproject.toml)
     #   google-api-core
+    #   google-genai
     #   streamlit
 rpds-py==0.24.0
     # via
@@ -191,6 +199,7 @@ typing-extensions==4.13.2
     # via
     #   altair
     #   beautifulsoup4
+    #   google-genai
     #   google-generativeai
     #   openai
     #   pydantic
@@ -205,3 +214,5 @@ uritemplate==4.1.1
     # via google-api-python-client
 urllib3==2.4.0
     # via requests
+websockets==15.0.1
+    # via google-genai
