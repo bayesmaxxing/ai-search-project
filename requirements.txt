@@ -62,7 +62,7 @@ google-api-core==2.24.2
     # via
     #   google-ai-generativelanguage
     #   google-api-python-client
-    #   google-generativeai
+google-generativeai
 google-api-python-client==2.168.0
     # via
     #   ai-search-metrics (pyproject.toml)
