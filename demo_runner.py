@@ -7,8 +7,26 @@ load_dotenv()
 from llm_integrations.perplexity_integration import PerplexityIntegration
 from llm_integrations.gemini_integration      import GeminiIntegration
 from llm_integrations.openai_integration      import OpenAIIntegration
-
+from llm_integrations.sentiment_analysis      import SentimentAnalysis
 ProviderResult = Dict  # -> the same dict shape your provider classes return
+
+def add_sentiment_analysis(results: List[ProviderResult]) -> List[ProviderResult]:
+    """Add sentiment analysis to results synchronously."""
+    try:
+        analyzer = SentimentAnalysis()
+        contexts = [r.get("brand_mention_context") for r in results if r.get("brand_mention_context")]
+        if contexts:
+            sentiments = analyzer.predict_sentiment(contexts)
+            # Add sentiments back to the original results
+            context_index = 0
+            for result in results:
+                if result.get("brand_mention_context"):
+                    result["sentiment"] = sentiments[context_index]
+                    context_index += 1
+    except Exception as e:
+        print(f"Error running sentiment analysis: {e}")
+        # Continue without sentiment analysis if it fails
+    return results
 
 async def run_all(
     brand: str,
@@ -29,4 +47,6 @@ async def run_all(
 
     nested_results: List[List[ProviderResult]] = await asyncio.gather(*tasks)
     # flatten so Streamlit can loop easily
-    return [item for sub in nested_results for item in sub]
+    results = [item for sub in nested_results for item in sub]
+    
+    return results

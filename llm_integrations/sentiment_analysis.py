@@ -1,21 +1,29 @@
 # This is to create a first draft of sentiment analysis of brand mentions
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
+from textblob import TextBlob
 
 
 class SentimentAnalysis:
-    def __init__(self, model_name="tabularisai/multilingual-sentiment-analysis"):
-        self.model_name = model_name
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_name)
+    def __init__(self):
+        pass
 
     def predict_sentiment(self, texts):
-        inputs = self.tokenizer(texts, return_tensors="pt", truncation=True, padding=True, max_length=512)
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-            probabilities = torch.nn.functional.softmax(outputs.logits, dim=-1)
-            sentiment_map = {0: "Very Negative", 1: "Negative", 2: "Neutral", 3: "Positive", 4: "Very Positive"}
-        return [sentiment_map[p] for p in torch.argmax(probabilities, dim=-1).tolist()]
+        sentiments = []
+        for text in texts:
+            analysis = TextBlob(text)
+            # Convert polarity (-1 to 1) to our 5 categories
+            polarity = analysis.sentiment.polarity
+            if polarity <= -0.6:
+                sentiment = "Very Negative"
+            elif polarity <= -0.2:
+                sentiment = "Negative"
+            elif polarity <= 0.2:
+                sentiment = "Neutral"
+            elif polarity <= 0.6:
+                sentiment = "Positive"
+            else:
+                sentiment = "Very Positive"
+            sentiments.append(sentiment)
+        return sentiments
 
 
 def main():

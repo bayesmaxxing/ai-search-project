@@ -4,7 +4,7 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 load_dotenv() 
-from demo_runner import run_all
+from demo_runner import run_all, add_sentiment_analysis
 
 st.set_page_config(page_title="AI Search-Metrics Demo", layout="wide")
 st.title("💡 AI-powered Brand Monitoring (demo)")
@@ -28,6 +28,9 @@ if submitted:
 
     with st.spinner("Calling LLMs… this may take ~60 s"):
         results = asyncio.run(run_all(brand, competitor, queries))
+        # Add sentiment analysis after getting results
+        
+        results = add_sentiment_analysis(results)
 
     # Turn list-of-dicts into a DataFrame for pretty display
     df = pd.DataFrame(results)
@@ -52,10 +55,30 @@ if submitted:
         color=['#FF4B4B', '#00BFFF']
     )
     st.caption("Brand and competitor mention rates by provider (%)")
+
+    # Add sentiment distribution chart
+    if 'sentiment' in df.columns:
+        st.subheader("😊 Sentiment Distribution")
+        sentiment_counts = df['sentiment'].value_counts().reindex([
+            'Very Negative', 'Negative', 'Neutral', 'Positive', 'Very Positive'
+        ], fill_value=0)
+        
+        # Create two columns for the chart and the data
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            st.bar_chart(sentiment_counts, color='#4CAF50')
+            st.caption("Distribution of sentiment across all brand mentions")
+        
+        with col2:
+            st.dataframe(
+                sentiment_counts.reset_index().rename(columns={'index': 'Sentiment', 'sentiment': 'Count'}),
+                hide_index=True
+            )
     
     st.subheader("📊 Results")
     st.dataframe(
-        df[["provider_name", "query_text", "brand_mention", "competitor_mention", "response_text"]],
+        df[["provider_name", "query_text", "brand_mention", "competitor_mention", "sentiment", "response_text"]],
         use_container_width=True
     )
 
@@ -65,7 +88,9 @@ if submitted:
             st.markdown(f"**Brand mention?** {row['brand_mention']}")
             st.markdown(f"**Competitor mention?** {row['competitor_mention']}")
             if row["brand_mention_context"]:
-                st.markdown(f"**Brand Context:**\n> {row['brand_mention_context']}")                
+                st.markdown(f"**Brand Context:**\n> {row['brand_mention_context']}")
+                if "sentiment" in row:
+                    st.markdown(f"**Sentiment:** {row['sentiment']}")                
             st.markdown("---")
             st.markdown("**Full response:**")
             st.write(row["response_text"])
