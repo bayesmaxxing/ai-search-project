@@ -28,7 +28,7 @@ class OpenAIIntegration:
         
         response_text = await self.extract_response_text(response)
         search_urls = await self.extract_search_urls(response)
-        brand_mention = await self.count_brand_mentions(response, self.brand_name)
+        brand_mention, competitor_mention = await self.extract_brand_mentions(response, self.brand_name, self.competitor_name)
         brand_mention_context = await self.extract_brand_mention_context(response, self.brand_name)
         
         output = dict(brand_name=self.brand_name,
@@ -39,6 +39,7 @@ class OpenAIIntegration:
                 response_text=response_text, 
                 search_urls=search_urls, 
                 brand_mention=brand_mention, 
+                competitor_mention=competitor_mention,
                 brand_mention_context=brand_mention_context)
 
         return output
@@ -74,10 +75,11 @@ class OpenAIIntegration:
         
         return result
             
-    async def count_brand_mentions(self, response, brand_name):
+    async def extract_brand_mentions(self, response, brand_name, competitor_name):
         text = await self.extract_response_text(response)
-        mention = await has_brand_mention(text, brand_name)
-        return mention
+        brand_mention = await has_brand_mention(text, brand_name)
+        competitor_mention = await has_brand_mention(text, competitor_name)
+        return brand_mention, competitor_mention
     
 async def main():
     openai_integration = OpenAIIntegration()

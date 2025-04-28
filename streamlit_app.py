@@ -33,12 +33,14 @@ if submitted:
     df = pd.DataFrame(results)
     # Show only the interesting columns in the main table
     # Add summary statistics
-    st.subheader("📈 Brand Mention Summary")
+    st.subheader("📈 Brand & Competitor Mention Summary")
     summary_df = df.groupby('provider_name').agg({
-        'brand_mention': ['count', 'sum']
+        'brand_mention': ['count', 'sum'],
+        'competitor_mention': ['sum']
     }).reset_index()
-    summary_df.columns = ['Provider', 'Total Queries', 'Brand Mentions']
-    summary_df['Mention Rate'] = (summary_df['Brand Mentions'] / summary_df['Total Queries'] * 100).round(1)
+    summary_df.columns = ['Provider', 'Total Queries', 'Brand Mentions', 'Competitor Mentions']
+    summary_df['Brand Mention Rate'] = (summary_df['Brand Mentions'] / summary_df['Total Queries'] * 100).round(1)
+    summary_df['Competitor Mention Rate'] = (summary_df['Competitor Mentions'] / summary_df['Total Queries'] * 100).round(1)
     st.dataframe(
         summary_df,
         use_container_width=True
@@ -46,14 +48,14 @@ if submitted:
 
     # Add bar chart
     st.bar_chart(
-        summary_df.set_index('Provider')['Mention Rate'],
-        color='#FF4B4B'
+        summary_df.set_index('Provider')[['Brand Mention Rate', 'Competitor Mention Rate']],
+        color=['#FF4B4B', '#00BFFF']
     )
-    st.caption("Brand mention rate by provider (%)")
+    st.caption("Brand and competitor mention rates by provider (%)")
     
     st.subheader("📊 Results")
     st.dataframe(
-        df[["provider_name", "query_text", "brand_mention", "response_text"]],
+        df[["provider_name", "query_text", "brand_mention", "competitor_mention", "response_text"]],
         use_container_width=True
     )
 
@@ -61,8 +63,11 @@ if submitted:
     for _, row in df.iterrows():
         with st.expander(f'{row["provider_name"]} – {row["query_text"][:40]}…'):
             st.markdown(f"**Brand mention?** {row['brand_mention']}")
+            st.markdown(f"**Competitor mention?** {row['competitor_mention']}")
             if row["brand_mention_context"]:
-                st.markdown(f"**Context:**\n> {row['brand_mention_context']}")
+                st.markdown(f"**Brand Context:**\n> {row['brand_mention_context']}")
+            if row["competitor_mention_context"]:
+                st.markdown(f"**Competitor Context:**\n> {row['competitor_mention_context']}")
             st.markdown("---")
             st.markdown("**Full response:**")
             st.write(row["response_text"])
