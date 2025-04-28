@@ -65,9 +65,7 @@ if submitted:
             st.markdown(f"**Brand mention?** {row['brand_mention']}")
             st.markdown(f"**Competitor mention?** {row['competitor_mention']}")
             if row["brand_mention_context"]:
-                st.markdown(f"**Brand Context:**\n> {row['brand_mention_context']}")
-            if row["competitor_mention_context"]:
-                st.markdown(f"**Competitor Context:**\n> {row['competitor_mention_context']}")
+                st.markdown(f"**Brand Context:**\n> {row['brand_mention_context']}")                
             st.markdown("---")
             st.markdown("**Full response:**")
             st.write(row["response_text"])
