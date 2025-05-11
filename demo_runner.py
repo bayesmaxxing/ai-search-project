@@ -31,7 +31,8 @@ def add_sentiment_analysis(results: List[ProviderResult]) -> List[ProviderResult
 async def run_all(
     brand: str,
     competitor: str,
-    queries: List[str]
+    queries: List[str],
+    repeat_count: int = 1
 ) -> List[ProviderResult]:
     """Run all providers concurrently and flatten the results."""
     providers = [
@@ -39,7 +40,7 @@ async def run_all(
         GeminiIntegration(brand_name=brand, competitor_name=competitor),
         OpenAIIntegration(brand_name=brand, competitor_name=competitor),
     ]
-    queries = queries * 3
+    queries = queries * repeat_count
     tasks = [p.batch_query_perplexity(queries) if p.provider_name == "Perplexity"
              else p.batch_query_gemini(queries) if p.provider_name == "Gemini"
              else p.batch_query_openai(queries)

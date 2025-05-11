@@ -18,6 +18,7 @@ with st.form(key="input_form"):
         "How can I trade stocks in Sweden?\n"
         "What's the most user-friendly stock trading platform in Sweden?"
     )
+    repeat_count = st.number_input("Repeat count", value=1, min_value=1, max_value=10, step=1)
     submitted = st.form_submit_button("Run demo")
 
 if submitted:
@@ -27,9 +28,8 @@ if submitted:
         st.stop()
 
     with st.spinner("Calling LLMs… this may take ~60 s"):
-        results = asyncio.run(run_all(brand, competitor, queries))
+        results = asyncio.run(run_all(brand, competitor, queries, repeat_count))
         # Add sentiment analysis after getting results
-        
         results = add_sentiment_analysis(results)
 
     # Turn list-of-dicts into a DataFrame for pretty display
@@ -75,6 +75,77 @@ if submitted:
                 sentiment_counts.reset_index().rename(columns={'index': 'Sentiment', 'sentiment': 'Count'}),
                 hide_index=True
             )
+    
+    # Add URL domain analysis
+    st.subheader("🔗 Search URL Domain Analysis")
+    
+    # Count domain mentions in URLs
+    brand_domain = brand.lower()
+    competitor_domain = competitor.lower()
+    
+    url_domain_counts = {
+        'Provider': [],
+        'Brand Domain Mentions': [],
+        'Competitor Domain Mentions': []
+    }
+    
+    for provider in df['provider_name'].unique():
+        provider_urls = df[df['provider_name'] == provider]['search_urls'].explode()
+        brand_count = sum(1 for url in provider_urls if (
+            (isinstance(url, tuple) and brand_domain in url[1].lower()) or
+            (isinstance(url, str) and brand_domain in url.lower())
+        ))
+        competitor_count = sum(1 for url in provider_urls if (
+            (isinstance(url, tuple) and competitor_domain in url[1].lower()) or
+            (isinstance(url, str) and competitor_domain in url.lower())
+        ))
+    
+    url_domain_counts['Provider'].append(provider)
+    url_domain_counts['Brand Domain Mentions'].append(brand_count)
+    url_domain_counts['Competitor Domain Mentions'].append(competitor_count)
+    
+    url_domain_df = pd.DataFrame(url_domain_counts)
+    st.dataframe(url_domain_df, use_container_width=True)
+    
+    # Add bar chart for domain mentions
+    st.bar_chart(
+        url_domain_df.set_index('Provider')[['Brand Domain Mentions', 'Competitor Domain Mentions']],
+        color=['#FF4B4B', '#00BFFF']
+    )
+    st.caption("Number of times each brand's domain appears in search URLs")
+    
+    # Add strategic analysis section
+    st.subheader("🎯 Strategic Analysis")
+    
+    # Calculate key metrics for the prompt
+    total_queries = len(df)
+    brand_mention_rate = (df['brand_mention'].sum() / total_queries * 100).round(1)
+    competitor_mention_rate = (df['competitor_mention'].sum() / total_queries * 100).round(1)
+    
+    # Calculate total domain mentions
+    total_brand_domains = url_domain_df['Brand Domain Mentions'].sum()
+    total_competitor_domains = url_domain_df['Competitor Domain Mentions'].sum()
+    
+    # Create the analysis prompt
+    analysis_prompt = f"""Based on the following search analysis data for {brand}:
+
+1. Brand Performance:
+   - Brand mention rate: {brand_mention_rate}%
+   - Total brand domain mentions in URLs: {total_brand_domains}
+
+2. Search Context:
+   - Total queries analyzed: {total_queries}
+   - Search providers: {', '.join(df['provider_name'].unique())}
+
+Please provide specific, actionable recommendations for how {brand} could improve their marketing strategy to:
+1. Increase their mention rate in AI search results
+2. Improve their domain visibility in search URLs
+
+Focus on practical, implementable strategies that could be executed in the next 3-6 months."""
+
+    # Display the prompt in an expander
+    with st.expander("View Analysis Prompt"):
+        st.text_area("Copy this prompt to analyze with an LLM:", analysis_prompt, height=300)
     
     st.subheader("📊 Results")
     st.dataframe(
