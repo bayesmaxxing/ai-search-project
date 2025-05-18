@@ -51,3 +51,13 @@ async def run_all(
     results = [item for sub in nested_results for item in sub]
     
     return results
+
+async def run_analysis(analysis_prompt: str) -> str:
+    """Run the analysis prompt through an LLM provider."""
+    try:
+        provider = OpenAIIntegration()
+        response = await provider.query_openai(analysis_prompt)
+        return response.get("response_text", "Analysis failed to generate.")
+    except Exception as e:
+        print(f"Error running analysis: {e}")
+        return "Analysis failed to generate due to an error."

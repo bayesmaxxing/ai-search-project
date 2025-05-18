@@ -4,24 +4,35 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 load_dotenv() 
-from demo_runner import run_all, add_sentiment_analysis
+from demo_runner import run_all, add_sentiment_analysis, run_analysis
 
 st.set_page_config(page_title="AI Search-Metrics Demo", layout="wide")
 st.title("💡 AI-powered Brand Monitoring (demo)")
 
-with st.form(key="input_form"):
-    brand       = st.text_input("Target brand",  value="Avanza")
-    competitor  = st.text_input("Competitor",    value="Nordnet")
-    queries_raw = st.text_area(
-        "Queries (one per line)",
-        "What to use for investing in stocks in Sweden?\n"
-        "How can I trade stocks in Sweden?\n"
-        "What's the most user-friendly stock trading platform in Sweden?"
-    )
-    repeat_count = st.number_input("Repeat count", value=1, min_value=1, max_value=10, step=1)
-    submitted = st.form_submit_button("Run demo")
+# Initialize session state variables if they don't exist
+if 'results' not in st.session_state:
+    st.session_state.results = None
+if 'analysis_prompt' not in st.session_state:
+    st.session_state.analysis_prompt = None
+if 'analysis_result' not in st.session_state:
+    st.session_state.analysis_result = None
+if 'show_results' not in st.session_state:
+    st.session_state.show_results = False
 
-if submitted:
+# Input section
+st.subheader("📝 Input Parameters")
+brand = st.text_input("Target brand", value="Avanza")
+competitor = st.text_input("Competitor", value="Nordnet")
+queries_raw = st.text_area(
+    "Queries (one per line)",
+    "What to use for investing in stocks in Sweden?\n"
+    "How can I trade stocks in Sweden?\n"
+    "What's the most user-friendly stock trading platform in Sweden?"
+)
+repeat_count = st.number_input("Repeat count", value=1, min_value=1, max_value=10, step=1)
+
+# Run demo button
+if st.button("Run Demo"):
     queries = [q.strip() for q in queries_raw.splitlines() if q.strip()]
     if not queries:
         st.error("Please enter at least one query.")
@@ -31,9 +42,14 @@ if submitted:
         results = asyncio.run(run_all(brand, competitor, queries, repeat_count))
         # Add sentiment analysis after getting results
         results = add_sentiment_analysis(results)
+        # Store results in session state
+        st.session_state.results = results
+        st.session_state.show_results = True
 
-    # Turn list-of-dicts into a DataFrame for pretty display
-    df = pd.DataFrame(results)
+# Display results if they exist
+if st.session_state.show_results and st.session_state.results is not None:
+    df = pd.DataFrame(st.session_state.results)
+    
     # Show only the interesting columns in the main table
     # Add summary statistics
     st.subheader("📈 Brand & Competitor Mention Summary")
@@ -100,9 +116,9 @@ if submitted:
             (isinstance(url, str) and competitor_domain in url.lower())
         ))
     
-    url_domain_counts['Provider'].append(provider)
-    url_domain_counts['Brand Domain Mentions'].append(brand_count)
-    url_domain_counts['Competitor Domain Mentions'].append(competitor_count)
+        url_domain_counts['Provider'].append(provider)
+        url_domain_counts['Brand Domain Mentions'].append(brand_count)
+        url_domain_counts['Competitor Domain Mentions'].append(competitor_count)
     
     url_domain_df = pd.DataFrame(url_domain_counts)
     st.dataframe(url_domain_df, use_container_width=True)
@@ -126,12 +142,16 @@ if submitted:
     total_brand_domains = url_domain_df['Brand Domain Mentions'].sum()
     total_competitor_domains = url_domain_df['Competitor Domain Mentions'].sum()
     
+    # Calculate sentiment distribution
+    sentiment_distribution = df['sentiment'].value_counts().to_dict()
+    
     # Create the analysis prompt
     analysis_prompt = f"""Based on the following search analysis data for {brand}:
 
 1. Brand Performance:
    - Brand mention rate: {brand_mention_rate}%
    - Total brand domain mentions in URLs: {total_brand_domains}
+   - Sentiment distribution: {sentiment_distribution}
 
 2. Search Context:
    - Total queries analyzed: {total_queries}
@@ -140,12 +160,28 @@ if submitted:
 Please provide specific, actionable recommendations for how {brand} could improve their marketing strategy to:
 1. Increase their mention rate in AI search results
 2. Improve their domain visibility in search URLs
+3. Enhance positive sentiment in brand mentions
 
 Focus on practical, implementable strategies that could be executed in the next 3-6 months."""
+
+    # Store the prompt in session state
+    st.session_state.analysis_prompt = analysis_prompt
 
     # Display the prompt in an expander
     with st.expander("View Analysis Prompt"):
         st.text_area("Copy this prompt to analyze with an LLM:", analysis_prompt, height=300)
+    
+    # Add a button to run the analysis
+    if st.button("Run Analysis"):
+        with st.spinner("Generating analysis..."):
+            analysis_result = asyncio.run(run_analysis(analysis_prompt))
+            st.session_state.analysis_result = analysis_result
+            st.rerun()
+
+    # Display analysis result if it exists
+    if st.session_state.analysis_result:
+        st.subheader("🤖 AI Analysis")
+        st.markdown(st.session_state.analysis_result)
     
     st.subheader("📊 Results")
     st.dataframe(
