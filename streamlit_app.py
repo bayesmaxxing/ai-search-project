@@ -2,6 +2,7 @@ import streamlit as st
 import asyncio
 import pandas as pd
 import os
+import plotly.graph_objects as go
 from dotenv import load_dotenv
 load_dotenv() 
 from demo_runner import run_all, add_sentiment_analysis, run_analysis
@@ -65,11 +66,28 @@ if st.session_state.show_results and st.session_state.results is not None:
         use_container_width=True
     )
 
-    # Add bar chart
-    st.bar_chart(
-        summary_df.set_index('Provider')[['Brand Mention Rate', 'Competitor Mention Rate']],
-        color=['#FF4B4B', '#00BFFF']
+    # Add bar chart for mention rates
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        name='Brand',
+        x=summary_df['Provider'],
+        y=summary_df['Brand Mention Rate'],
+        marker_color='#FF4B4B'
+    ))
+    fig.add_trace(go.Bar(
+        name='Competitor',
+        x=summary_df['Provider'],
+        y=summary_df['Competitor Mention Rate'],
+        marker_color='#00BFFF'
+    ))
+    fig.update_layout(
+        title='Brand and Competitor Mention Rates by Provider',
+        xaxis_title='Provider',
+        yaxis_title='Mention Rate (%)',
+        barmode='group',
+        showlegend=True
     )
+    st.plotly_chart(fig, use_container_width=True)
     st.caption("Brand and competitor mention rates by provider (%)")
 
     # Add sentiment distribution chart
@@ -124,10 +142,27 @@ if st.session_state.show_results and st.session_state.results is not None:
     st.dataframe(url_domain_df, use_container_width=True)
     
     # Add bar chart for domain mentions
-    st.bar_chart(
-        url_domain_df.set_index('Provider')[['Brand Domain Mentions', 'Competitor Domain Mentions']],
-        color=['#FF4B4B', '#00BFFF']
+    fig2 = go.Figure()
+    fig2.add_trace(go.Bar(
+        name='Brand',
+        x=url_domain_df['Provider'],
+        y=url_domain_df['Brand Domain Mentions'],
+        marker_color='#FF4B4B'
+    ))
+    fig2.add_trace(go.Bar(
+        name='Competitor',
+        x=url_domain_df['Provider'],
+        y=url_domain_df['Competitor Domain Mentions'],
+        marker_color='#00BFFF'
+    ))
+    fig2.update_layout(
+        title='Brand and Competitor Domain Mentions by Provider',
+        xaxis_title='Provider',
+        yaxis_title='Number of Mentions',
+        barmode='group',
+        showlegend=True
     )
+    st.plotly_chart(fig2, use_container_width=True)
     st.caption("Number of times each brand's domain appears in search URLs")
     
     # Add strategic analysis section
