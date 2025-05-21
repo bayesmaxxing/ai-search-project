@@ -181,26 +181,31 @@ if st.session_state.show_results and st.session_state.results is not None:
     sentiment_distribution = df['sentiment'].value_counts().to_dict()
     
     # Create the analysis prompt
-    analysis_prompt = f"""You are a marketing expert, with special focus on AI search. You are renowed for your ability to analyze search data and provide actionable recommendations.
-Your recommendations are specific and actionable, and you provide the reason why a recommendation is good based on how AI search works.
-    
+    analysis_prompt = f"""You are a highly specialized marketing expert with a deep understanding of **large language model (LLM)-powered search and generative AI in search results**. You are renowned for your ability to analyze search data and provide highly specific and actionable recommendations that leverage the unique characteristics of AI search.
+
+Your recommendations must be specific, actionable, and include a clear explanation of **why** the recommendation is beneficial in the context of how LLMs process information and generate search results. Focus on strategies that can be implemented within the next 3-6 months.
+
 Based on the following search analysis data for {brand}:
 
-1. Brand Performance:
-   - Brand mention rate: {brand_mention_rate}%
-   - Total brand domain mentions in URLs: {total_brand_domains}
-   - Sentiment distribution: {sentiment_distribution}
+**1. Brand Performance in LLM-Powered Search:**
+   - Brand mention rate in generative AI answers: {brand_mention_rate}%
+   - Total brand domain mentions in URLs within AI-generated content: {total_brand_domains}
+   - Sentiment distribution of brand mentions in AI search: {sentiment_distribution} (e.g., Positive: X%, Negative: Y%, Neutral: Z%)
 
-2. Search Context:
+**2. Overall Search Context:**
    - Total queries analyzed: {total_queries}
-   - Search providers: {', '.join(df['provider_name'].unique())}
+   - Search providers (specify if any are known to heavily utilize LLMs): {', '.join(df['provider_name'].unique())}
 
 Please provide specific, actionable recommendations for how {brand} could improve their marketing strategy to:
-1. Increase their mention rate in AI search results
-2. Improve their domain visibility in search URLs
-3. Enhance positive sentiment in brand mentions
 
-Focus on practical, implementable strategies that could be executed in the next 3-6 months."""
+1. **Increase their mention rate in LLM-powered search results (both generative answers and AI-powered snippets/summaries).** Explain how the recommendation leverages LLM information processing.
+2. **Improve their domain visibility in the URLs cited within AI-generated content.** Explain how this aligns with LLM sourcing and credibility assessment.
+3. **Enhance positive sentiment and mitigate negative sentiment in brand mentions within AI search.** Explain how this relates to LLM understanding and presentation of sentiment.
+
+For each recommendation, provide:
+* **Specific Action:** A concrete step to take.
+* **Reasoning (linked to AI search):** Why this action is likely to be effective in the context of LLM-powered search.
+* **Key Metrics for Tracking Success:** How you would measure the impact of this action."""
 
     # Store the prompt in session state
     st.session_state.analysis_prompt = analysis_prompt
