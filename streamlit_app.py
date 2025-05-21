@@ -181,7 +181,10 @@ if st.session_state.show_results and st.session_state.results is not None:
     sentiment_distribution = df['sentiment'].value_counts().to_dict()
     
     # Create the analysis prompt
-    analysis_prompt = f"""Based on the following search analysis data for {brand}:
+    analysis_prompt = f"""You are a marketing expert, with special focus on AI search. You are renowed for your ability to analyze search data and provide actionable recommendations.
+Your recommendations are specific and actionable, and you provide the reason why a recommendation is good based on how AI search works.
+    
+Based on the following search analysis data for {brand}:
 
 1. Brand Performance:
    - Brand mention rate: {brand_mention_rate}%
@@ -203,13 +206,20 @@ Focus on practical, implementable strategies that could be executed in the next 
     st.session_state.analysis_prompt = analysis_prompt
 
     # Display the prompt in an expander
-    with st.expander("View Analysis Prompt"):
-        st.text_area("Copy this prompt to analyze with an LLM:", analysis_prompt, height=300)
+    with st.expander("View and Edit Analysis Prompt"):
+        edited_prompt = st.text_area(
+            "Edit the analysis prompt if desired:",
+            value=st.session_state.analysis_prompt,
+            height=300
+        )
+        if edited_prompt != st.session_state.analysis_prompt:
+            st.session_state.analysis_prompt = edited_prompt
+            st.info("Analysis prompt has been updated. Click 'Run Analysis' to use the new prompt.")
     
     # Add a button to run the analysis
     if st.button("Run Analysis"):
         with st.spinner("Generating analysis..."):
-            analysis_result = asyncio.run(run_analysis(analysis_prompt))
+            analysis_result = asyncio.run(run_analysis(st.session_state.analysis_prompt))
             st.session_state.analysis_result = analysis_result
             st.rerun()
 

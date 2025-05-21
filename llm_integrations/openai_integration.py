@@ -44,6 +44,14 @@ class OpenAIIntegration:
 
         return output
     
+    async def query_openai_without_search(self, query_text):
+        response = self.client.responses.create(
+            model=self.model_name,
+            input=query_text
+        )
+        
+        return response.output_text
+    
     async def batch_query_openai(self, queries):
         responses = await asyncio.gather(*[self.query_openai(query) for query in queries])
 

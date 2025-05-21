@@ -55,9 +55,9 @@ async def run_all(
 async def run_analysis(analysis_prompt: str) -> str:
     """Run the analysis prompt through an LLM provider."""
     try:
-        provider = OpenAIIntegration()
-        response = await provider.query_openai(analysis_prompt)
-        return response.get("response_text", "Analysis failed to generate.")
+        provider = GeminiIntegration()
+        response = await provider.query_gemini_without_search(analysis_prompt)
+        return response
     except Exception as e:
         print(f"Error running analysis: {e}")
         return "Analysis failed to generate due to an error."

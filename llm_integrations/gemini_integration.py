@@ -50,6 +50,15 @@ class GeminiIntegration:
         
         return output
     
+    async def query_gemini_without_search(self, query_text):
+        response = self.client.models.generate_content(
+            model=self.model_name,
+            contents=query_text
+        )
+
+        response_text = await self.extract_response_text(response)
+        return response_text
+        
     async def batch_query_gemini(self, queries):
         responses = await asyncio.gather(*[self.query_gemini(query) for query in queries])
 
