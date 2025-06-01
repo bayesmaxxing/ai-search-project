@@ -22,30 +22,83 @@ st.markdown("""
         padding-top: 2rem;
         padding-bottom: 2rem;
         max-width: 1200px;
+        background-color: white;
+        color: #1f2937;  /* Dark gray text for main content */
+    }
+    
+    /* Set background color for the entire app */
+    .stApp {
+        background-color: white;
+    }
+    
+    /* Ensure all text is visible */
+    .stMarkdown, .stText, .stDataFrame, .stSelectbox, .stTextInput, .stTextArea, .stNumberInput {
+        color: #1f2937 !important;  /* Dark gray text */
+    }
+
+    /* Ensure table text is visible */
+    .stDataFrame td, .stDataFrame th {
+        color: #1f2937 !important;
+    }
+
+    /* Ensure selectbox text is visible */
+    .stSelectbox > div > div > div {
+        color: #1f2937 !important;
+    }
+
+    /* Input field styling */
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea,
+    .stNumberInput > div > div > input {
+        color: #1f2937 !important;
+        background-color: #f8fafc !important;  /* Light gray background */
+        border: 1px solid #e2e8f0 !important;
+        caret-color: #1f2937 !important;  /* Make cursor black */
+    }
+
+    /* Make text input labels darker */
+    .stTextInput label,
+    .stTextArea label,
+    .stNumberInput label,
+    .stSelectbox label {
+        color: #1f2937 !important;  /* Dark gray text */
+        font-weight: 500 !important;
+    }
+
+    /* Selectbox styling */
+    .stSelectbox > div > div {
+        background-color: #f8fafc !important;  /* Light gray background */
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    /* Dataframe styling */
+    .stDataFrame {
+        background-color: #f8fafc !important;  /* Light gray background */
     }
     
     /* Header styling */
     .app-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         padding: 2rem 0;
         margin: -2rem -1rem 2rem -1rem;
         border-radius: 0 0 20px 20px;
         text-align: center;
-        color: white;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        color: #1f2937;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid #e1e8ed;
     }
     
     .app-header h1 {
         font-size: 2.5rem;
         font-weight: 700;
         margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        color: #1f2937;
     }
     
     .app-header p {
         font-size: 1.1rem;
         margin: 0.5rem 0 0 0;
-        opacity: 0.9;
+        color: #4b5563;
     }
     
     /* Metric cards */
@@ -89,17 +142,18 @@ st.markdown("""
         font-weight: 500;
         border: none;
         transition: all 0.2s ease;
+        color: #4b5563;  /* Adding text color for unselected tabs */
     }
     
     .stTabs [aria-selected="true"] {
         background-color: white;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        color: #667eea;
+        color: #3b82f6;
     }
     
     /* Button styling */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
         color: white;
         border: none;
         border-radius: 10px;
@@ -107,41 +161,24 @@ st.markdown("""
         font-weight: 600;
         font-size: 1rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
     
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
     }
     
     /* Input styling */
-    .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea,
-    .stNumberInput > div > div > input {
-        border-radius: 8px;
-        border: 2px solid #e1e8ed;
-        padding: 0.75rem;
-        font-size: 1rem;
-        transition: border-color 0.2s ease;
-    }
-    
     .stTextInput > div > div > input:focus,
     .stTextArea > div > div > textarea:focus,
     .stNumberInput > div > div > input:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     
     /* Chart styling */
     .js-plotly-plot {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-    
-    /* Dataframe styling */
-    .stDataFrame {
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 2px 10px rgba(0,0,0,0.08);
@@ -152,11 +189,30 @@ st.markdown("""
         background-color: #f8fafc;
         border-radius: 8px;
         border: 1px solid #e1e8ed;
+        color: #1f2937 !important;
+        font-weight: 500 !important;
+    }
+    
+    /* Make expander content text darker */
+    .streamlit-expanderContent {
+        color: #1f2937 !important;
+    }
+
+    /* Make info messages darker */
+    .stInfo p {
+        color: #1f2937 !important;
+        font-weight: 500 !important;
     }
     
     /* Spinner styling */
     .stSpinner > div {
-        border-top-color: #667eea;
+        border-top-color: #3b82f6;
+    }
+    
+    /* Make spinner text darker */
+    .stSpinner p {
+        color: #1f2937 !important;
+        font-weight: 500 !important;
     }
     
     /* Section headers */
@@ -172,7 +228,13 @@ st.markdown("""
     /* Success/info messages */
     .stSuccess, .stInfo {
         border-radius: 8px;
-        border-left: 4px solid #667eea;
+        border-left: 4px solid #3b82f6;
+    }
+
+    /* Make success and info message text darker */
+    .stSuccess p, .stInfo p {
+        color: #1f2937 !important;
+        font-weight: 500 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -187,11 +249,11 @@ st.markdown("""
 
 # Create tabs
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "📝 Input", 
-    "📈 Brand Analysis", 
-    "😊 Sentiment", 
-    "🔗 URL Analysis", 
-    "🎯 Strategy (LLM analysis)", 
+    "Input", 
+    "Brand Analysis", 
+    "Sentiment", 
+    "URL Analysis", 
+    "Strategy (LLM analysis)", 
     "Raw Results"
 ])
 
@@ -214,12 +276,12 @@ with tab1:
     
     with col1:
         st.markdown("**Brand Configuration**")
-        brand = st.text_input("🎯 Target Brand", value="Avanza", help="The brand you want to analyze")
-        competitor = st.text_input("🏢 Main Competitor", value="Nordnet", help="Primary competitor to compare against")
+        brand = st.text_input("Target Brand", value="Avanza", help="The brand you want to analyze")
+        competitor = st.text_input("Main Competitor", value="Nordnet", help="Primary competitor to compare against")
         
         st.markdown("**Search Queries**")
         queries_raw = st.text_area(
-            "📝 Queries (one per line)",
+            "Queries (one per line)",
             "What to use for investing in stocks in Sweden?\n"
             "How can I trade stocks in Sweden?\n"
             "What's the most user-friendly stock trading platform in Sweden?",
@@ -241,22 +303,15 @@ with tab1:
         # Add some information cards
         st.markdown("""
         <div class="metric-card">
-            <div class="metric-value">3</div>
+            <div class="metric-value">4</div>
             <div class="metric-label">AI Search Providers</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div class="metric-card">
-            <div class="metric-value">~60s</div>
-            <div class="metric-label">Estimated Runtime</div>
         </div>
         """, unsafe_allow_html=True)
     
     # Center the run button
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        if st.button("🚀 Run Analysis", use_container_width=True):
+        if st.button("Run Analysis", use_container_width=True):
             queries = [q.strip() for q in queries_raw.splitlines() if q.strip()]
             if not queries:
                 st.error("Please enter at least one query.")
@@ -337,7 +392,7 @@ if st.session_state.show_results and st.session_state.results is not None:
             name=brand,
             x=summary_df['Provider'],
             y=summary_df['Brand Mention Rate'],
-            marker_color='#667eea',
+            marker_color='#3b82f6',
             text=summary_df['Brand Mention Rate'].apply(lambda x: f'{x}%'),
             textposition='auto'
         ))
@@ -345,7 +400,7 @@ if st.session_state.show_results and st.session_state.results is not None:
             name=competitor,
             x=summary_df['Provider'],
             y=summary_df['Competitor Mention Rate'],
-            marker_color='#f093fb',
+            marker_color='#ec4899',
             text=summary_df['Competitor Mention Rate'].apply(lambda x: f'{x}%'),
             textposition='auto'
         ))
@@ -364,8 +419,8 @@ if st.session_state.show_results and st.session_state.results is not None:
             font={'color': '#1f2937'},
             legend={'orientation': 'h', 'yanchor': 'bottom', 'y': 1.02, 'xanchor': 'right', 'x': 1}
         )
-        fig.update_xaxes(showgrid=False)
-        fig.update_yaxes(showgrid=True, gridcolor='#e1e8ed')
+        fig.update_xaxes(showgrid=False, tickfont={'color': '#1f2937'})
+        fig.update_yaxes(showgrid=True, gridcolor='#e1e8ed', tickfont={'color': '#1f2937'})
         
         st.plotly_chart(fig, use_container_width=True)
         
@@ -465,8 +520,8 @@ if st.session_state.show_results and st.session_state.results is not None:
                 font={'color': '#1f2937'},
                 showlegend=False
             )
-            fig.update_xaxes(showgrid=False)
-            fig.update_yaxes(showgrid=True, gridcolor='#e1e8ed')
+            fig.update_xaxes(showgrid=False, tickfont={'color': '#1f2937'})
+            fig.update_yaxes(showgrid=True, gridcolor='#e1e8ed', tickfont={'color': '#1f2937'})
             
             st.plotly_chart(fig, use_container_width=True)
             
@@ -566,7 +621,7 @@ if st.session_state.show_results and st.session_state.results is not None:
             name=brand,
             x=url_domain_df['Provider'],
             y=url_domain_df['Brand Domain Mentions'],
-            marker_color='#667eea',
+            marker_color='#3b82f6',
             text=url_domain_df['Brand Domain Mentions'],
             textposition='auto'
         ))
@@ -574,7 +629,7 @@ if st.session_state.show_results and st.session_state.results is not None:
             name=competitor,
             x=url_domain_df['Provider'],
             y=url_domain_df['Competitor Domain Mentions'],
-            marker_color='#f093fb',
+            marker_color='#ec4899',
             text=url_domain_df['Competitor Domain Mentions'],
             textposition='auto'
         ))
@@ -593,8 +648,8 @@ if st.session_state.show_results and st.session_state.results is not None:
             font={'color': '#1f2937'},
             legend={'orientation': 'h', 'yanchor': 'bottom', 'y': 1.02, 'xanchor': 'right', 'x': 1}
         )
-        fig2.update_xaxes(showgrid=False)
-        fig2.update_yaxes(showgrid=True, gridcolor='#e1e8ed')
+        fig2.update_xaxes(showgrid=False, tickfont={'color': '#1f2937'})
+        fig2.update_yaxes(showgrid=True, gridcolor='#e1e8ed', tickfont={'color': '#1f2937'})
         
         st.plotly_chart(fig2, use_container_width=True)
         
@@ -664,7 +719,7 @@ For each recommendation, provide:
         # Center the analysis button
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            if st.button("🧠 Generate Strategic Analysis", use_container_width=True):
+            if st.button("Generate Strategic Analysis", use_container_width=True):
                 with st.spinner("🤖 AI is analyzing your data and generating strategic recommendations..."):
                     analysis_result = asyncio.run(run_analysis(st.session_state.analysis_prompt))
                     st.session_state.analysis_result = analysis_result
@@ -673,12 +728,12 @@ For each recommendation, provide:
 
         # Display analysis result if it exists
         if st.session_state.analysis_result:
-            st.markdown("### 🎯 Strategic Recommendations")
+            st.markdown("### Strategic Recommendations")
             st.markdown(
                 f"""
-                <div style="background: linear-gradient(135deg, #1e2c40 0%, #040e1c 100%); 
-                           padding: 2rem; border-radius: 12px; border-left: 4px solid #667eea; 
-                           margin: 1rem 0;">
+                <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); 
+                           padding: 2rem; border-radius: 12px; border-left: 4px solid #3b82f6; 
+                           margin: 1rem 0; color: #1f2937; border: 1px solid #e1e8ed;">
                     {st.session_state.analysis_result}
                 </div>
                 """, 
@@ -776,7 +831,7 @@ For each recommendation, provide:
                     st.markdown(
                         f"""
                         <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; 
-                                   border-left: 3px solid #667eea; font-size: 0.9rem;">
+                                   border-left: 3px solid #3b82f6; font-size: 0.9rem; color: #1f2937;">
                             {row['response_text']}
                         </div>
                         """, 
