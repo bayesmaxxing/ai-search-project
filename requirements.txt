@@ -218,3 +218,4 @@ websockets==15.0.1
     # via google-genai
 textblob==0.19.0
 plotly==6.1.0
+anthropic==0.52.1
