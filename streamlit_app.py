@@ -676,7 +676,7 @@ For each recommendation, provide:
             st.markdown("### 🎯 Strategic Recommendations")
             st.markdown(
                 f"""
-                <div style="background: linear-gradient(135deg, #f8fafc 0%, #040e1c 100%); 
+                <div style="background: linear-gradient(135deg, #1e2c40 0%, #040e1c 100%); 
                            padding: 2rem; border-radius: 12px; border-left: 4px solid #667eea; 
                            margin: 1rem 0;">
                     {st.session_state.analysis_result}
