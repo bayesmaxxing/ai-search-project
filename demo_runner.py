@@ -40,13 +40,13 @@ async def run_all(
         PerplexityIntegration(brand_name=brand, competitor_name=competitor),
         GeminiIntegration(brand_name=brand, competitor_name=competitor),
         OpenAIIntegration(brand_name=brand, competitor_name=competitor),
-        ClaudeIntegration(brand_name=brand, competitor_name=competitor),
+       # ClaudeIntegration(brand_name=brand, competitor_name=competitor),
     ]
     queries = queries * repeat_count
     tasks = [p.batch_query_perplexity(queries) if p.provider_name == "Perplexity"
              else p.batch_query_gemini(queries) if p.provider_name == "Gemini"
              else p.batch_query_openai(queries) if p.provider_name == "OpenAI"
-             else p.batch_query_claude(queries) for p in providers]
+             else p.batch_query_perplexity(queries) for p in providers]
 
     nested_results: List[List[ProviderResult]] = await asyncio.gather(*tasks)
     # flatten so Streamlit can loop easily
